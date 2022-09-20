@@ -1,4 +1,4 @@
-import './App.css';
+import React, { Component } from 'react';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
@@ -6,33 +6,30 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
-import { Component } from 'react';
-import clarifai from 'clarifai';
+import './App.css';
 
 
-const app = new clarifai.App({
- apiKey: '5b3c7478a06e493b89565b534870b685'
-});
+const initialState = {
+  input: "",
+    imageUrl: "",
+    box: {},
+    route: "signin",
+    isSignedIn: false,
+    user: {
+      id: "",
+      name: "",
+      email: "",
+      entries: 0,
+      joined: ""
+    }
+}
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: "",
-      imageUrl: "",
-      box: {},
-      route: "signin",
-      isSignedIn: false,
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        entries: 0,
-        joined: ""
-      }
-    }
+    this.state = initialState
   }
-  
+
 loadUser = (data) => {
   this.setState({user: {
     id: data.id,
@@ -66,11 +63,14 @@ loadUser = (data) => {
 
   onImageSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    app.models
-      .predict(
-        clarifai.FACE_DETECT_MODEL,
-        this.state.input
-      )
+      fetch ("http://localhost:2500/imageurl", {
+        method: "post",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            input: this.state.input
+        })
+      })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch("http://localhost:2500/image", {
@@ -84,6 +84,8 @@ loadUser = (data) => {
             .then(count => {
               this.setState(Object.assign(this.state.user, { entries: count}))
             })
+            .catch(err => console.log (err))
+
         }
         this.displayFaceBox(this.calculateFaceLocation(response))
       })
@@ -92,7 +94,7 @@ loadUser = (data) => {
 
   onRouteChange = (route) => {
     if (route === "signout") {
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === "home") {
       this.setState({isSignedIn: true})
     }
