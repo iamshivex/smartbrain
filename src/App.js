@@ -63,7 +63,7 @@ loadUser = (data) => {
 
   onImageSubmit = () => {
     this.setState({imageUrl: this.state.input});
-      fetch ("http://localhost:2500/imageurl", {
+      fetch ("https://intense-bastion-51436.herokuapp.com/imageurl", {
         method: "post",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -73,7 +73,7 @@ loadUser = (data) => {
       .then(response => response.json())
       .then(response => {
         if (response) {
-          fetch("http://localhost:2500/image", {
+          fetch("https://intense-bastion-51436.herokuapp.com/image", {
             method: "put",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
