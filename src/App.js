@@ -6,6 +6,7 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
+import ParticlesBg from 'particles-bg';
 import './App.css';
 
 
@@ -105,29 +106,30 @@ loadUser = (data) => {
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
-          <Navigation 
-            isSignedIn={isSignedIn} 
-            onRouteChange={this.onRouteChange}
-          />
-          { route === "home" 
-            ? <div>
-                <Logo/>
-                <ImageLinkForm 
-                  onInputChange={this.onInputChange} 
-                  onImageSubmit={this.onImageSubmit}
-                />
-                <Rank 
-                  name={this.state.user.name}
-                  entries={this.state.user.entries}
-                />
-                <FaceRecognition box={box} imageUrl={imageUrl}/>
-              </div>
-            : (
-                route === "signin" 
-                  ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-                  : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-              )
-          }
+        <ParticlesBg type="cobweb" bg={true}/>
+        <Navigation 
+          isSignedIn={isSignedIn} 
+          onRouteChange={this.onRouteChange}
+        />
+        { route === "home" 
+          ? <div>
+              <Logo/>
+              <ImageLinkForm 
+                onInputChange={this.onInputChange} 
+                onImageSubmit={this.onImageSubmit}
+              />
+              <Rank 
+                name={this.state.user.name}
+                entries={this.state.user.entries}
+              />
+              <FaceRecognition box={box} imageUrl={imageUrl}/>
+            </div>
+          : (
+              route === "register" 
+                ? <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+                : <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+            )
+        }
       </div>
     );
   }
